@@ -15,7 +15,6 @@ endmacro(FetchCatch2)
 
 function(CompileTestFile TEST_NAME FILE_PATH)
     include(CTest)
-    include(Catch)
     add_executable(${TEST_NAME} ${FILE_PATH})
     target_link_libraries(${TEST_NAME} PRIVATE Catch2::Catch2WithMain)
 endfunction(CompileTestFile FILE_PATH)
