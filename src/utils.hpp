@@ -90,6 +90,126 @@ namespace utils{
         return res;
     }
 
+    std::vector<std::vector<int>> divide_into_list_of_lists_of_ints(
+        std::vector<std::string> & list, std::string_view delim
+    ){
+        std::vector<std::vector<int>> results;
+        results.reserve(list.size());
+        for(const auto & item:list){
+            std::vector<int> line;
+            std::string temp = item;
+            auto pos = temp.find(delim);
+            auto opos = pos-pos;
+            while(pos!=std::string::npos){
+                auto res = temp.substr(0,pos);
+                temp = temp.substr(pos+delim.size(),
+                    temp.size()-pos-delim.size());
+                pos = temp.find(delim);
+                try{
+                    int tbs = std::stoi(res);
+                    line.push_back(tbs);
+                }
+                catch(std::exception & e){
+                    std::cerr<<e.what()<<std::endl;
+                }
+            }
+            //for last element
+            {
+                auto res = temp.substr(0,temp.size());
+                int tbs = std::stoi(res);
+                line.push_back(tbs);
+            }
+            results.push_back(line);
+        }
+        return results;
+    }
+
+    template<typename T>
+    void print_vector_of_vector(std::vector<std::vector<T>> &lists_of_lists){
+        std::cout<<"------------------"<<std::endl;
+        for(auto & list: lists_of_lists){
+            for(auto & items:list)
+                std::cout<<items<<",";
+            std::cout<<std::endl;
+        }
+        std::cout<<"------------------"<<std::endl;
+    }
+
+    bool is_negative(int in){
+        return in <0;
+    }
+
+    bool is_positive(int in){
+        return in >0;
+    }
+
+    template<typename T>
+    int safe_list_count(std::vector<std::vector<T>> &lists_of_lists)
+    {
+        int res = 0;
+        std::vector<std::vector<T>> comparison(lists_of_lists.size());
+        
+        for(size_t i =0;i<lists_of_lists.size();i++){
+            for(size_t j =1;j<lists_of_lists[i].size();j++){
+                comparison[i].push_back(lists_of_lists[i][j]- lists_of_lists[i][j-1]);
+            }
+        }
+        print_vector_of_vector(comparison);
+        for(size_t i =0;i<comparison.size();i++){
+            bool isNeg = is_negative(comparison[i][0]);
+            if((std::abs(comparison[i][0])<=3 && std::abs(comparison[i][0])>=1)){
+                for(size_t j =0;j<comparison[i].size();j++){
+                    if(is_negative(comparison[i][j])==isNeg && 
+                        (std::abs(comparison[i][j])<=3 && std::abs(comparison[i][j])>=1)){
+                    }
+                    else{
+                        res++;
+                        break;
+                    }
+                }
+            }
+        }
+        //complement of res is answer
+        return lists_of_lists.size()-res;
+    }
+
+    bool is_safe(std::vector<int> & l,std::pair<int,int> filter)
+    {
+        auto sign = l[1]>l[0];
+        if(sign){
+            for(int i =1;i<l.size();i++){
+                auto diff = l[i]-l[i-1];
+                if(diff >filter.first or diff <filter.second)
+                    return false;
+            }
+        }
+        else{
+            for(int i =1;i<l.size();i++){
+                auto diff = l[i]-l[i-1];
+                if(diff<-filter.first or diff>-filter.second)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    template<typename T>
+    int safe_list_count_with_dampener(std::vector<std::vector<T>> &lists_of_lists)
+    {
+        int res = 0;
+        for(auto & l:lists_of_lists)
+        {
+            for(int i =0;i<l.size();i++){
+                std::vector<int> lc = l;
+                lc.erase(lc.begin()+i);
+                if(is_safe(lc,{3,1})){
+                    res+=1;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
 }
 
 #endif /*_UTILS*/
