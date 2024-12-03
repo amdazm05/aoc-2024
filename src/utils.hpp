@@ -8,6 +8,8 @@
 #include <queue>
 #include <unordered_set>
 #include <unordered_map>
+#include <iostream>
+#include <regex>
 
 namespace utils{
     std::vector<std::string> get_inputs_from_file(std::string_view filep,const std::source_location location =
@@ -210,6 +212,47 @@ namespace utils{
         }
         return res;
     }
+
+    std::vector<std::string> find_string_patterns
+        (std::string & test_string,std::string search_string)
+    {
+        std::vector<std::string> res;
+        std::regex eng(search_string);
+        std::sregex_iterator it(test_string.begin(),test_string.end(),eng);
+        std::sregex_iterator end;
+
+        while(it!=end){
+            res.push_back(it->str());
+            it++;
+        }
+        return res;
+    }
+
+    int compute_mul_string(std::vector<std::string> strings){
+        auto res = 0;
+        bool is_do=true;
+        for(const auto & s:strings){
+            if(s=="don't()"){
+                is_do =false;
+                continue;
+            }
+            else if(s=="do()"){
+                is_do=true;
+                continue;
+            }
+            if(is_do){
+                auto spos = s.find('(');
+                auto epos = s.find(',');
+                auto eepos = s.find(')');
+
+                auto a = std::stoi(s.substr(spos+1, epos-spos-1));
+                auto b = std::stoi(s.substr(epos+1, eepos-epos-1));
+                res+=(a*b);
+            }
+        }
+        return res;
+    }
+
 }
 
 #endif /*_UTILS*/
