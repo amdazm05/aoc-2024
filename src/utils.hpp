@@ -59,6 +59,38 @@ namespace utils{
         return res;
     }
 
+
+    std::vector<std::vector<int>> get_number_seperated_with_delim
+        (std::vector<std::string> & list,std::string_view seperation_string)
+    {
+        std::vector<std::vector<int>> res;
+        res.reserve(list.size());
+        for(auto & str: list)
+        {
+            std::vector<int> in;
+            auto it = str.find(seperation_string);
+            size_t previt = 0;
+            while(it!=std::string::npos){
+                std::string f = str.substr(0,it);
+                str = str.substr(it+1,str.size()-it-1);
+                previt = it;
+                it = str.find(seperation_string);
+                try{
+                    int a = std::stoi(std::string(f));
+                    in.emplace_back(a);
+                }
+                catch(std::exception & e)
+                {   
+                    std::cout<<e.what()<<std::endl;
+                }
+            }
+            int a = std::stoi(std::string(str));
+            in.emplace_back(a);
+            res.push_back(in);
+        }
+        return res;
+    }
+
     std::vector<int> find_difference_of_minimum_lists(std::vector<std::pair<int,int>> & lists)
     {
         std::priority_queue<int,std::vector<int>,std::greater<int>> pq1;
