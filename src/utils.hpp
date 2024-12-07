@@ -159,6 +159,40 @@ namespace utils{
         return results;
     }
 
+    std::vector<std::vector<long long>> divide_into_list_of_lists_of_ll(
+        std::vector<std::string> & list, std::string_view delim
+    ){
+        std::vector<std::vector<long long>> results;
+        results.reserve(list.size());
+        for(const auto & item:list){
+            std::vector<long long> line;
+            std::string temp = item;
+            auto pos = temp.find(delim);
+            auto opos = pos-pos;
+            while(pos!=std::string::npos){
+                auto res = temp.substr(0,pos);
+                temp = temp.substr(pos+delim.size(),
+                    temp.size()-pos-delim.size());
+                pos = temp.find(delim);
+                try{
+                    int tbs = std::stoi(res);
+                    line.push_back(tbs);
+                }
+                catch(std::exception & e){
+                    std::cerr<<e.what()<<std::endl;
+                }
+            }
+            //for last element
+            {
+                auto res = temp.substr(0,temp.size());
+                long long tbs = std::stoll(res);
+                line.push_back(tbs);
+            }
+            results.push_back(line);
+        }
+        return results;
+    }
+
     template<typename T>
     void print_vector_of_vector(std::vector<std::vector<T>> &lists_of_lists){
         std::cout<<"------------------"<<std::endl;
