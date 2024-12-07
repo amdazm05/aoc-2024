@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <regex>
+#include <set>
 
 namespace utils{
     std::vector<std::string> get_inputs_from_file(std::string_view filep,const std::source_location location =
@@ -165,6 +166,15 @@ namespace utils{
             for(auto & items:list)
                 std::cout<<items<<",";
             std::cout<<std::endl;
+        }
+        std::cout<<"------------------"<<std::endl;
+    }
+
+    //for string based graphs
+    void print_graph(std::vector<std::string> &graph){
+        std::cout<<"------------------"<<std::endl;
+        for(auto & g: graph){
+            std::cout<<g<<std::endl;
         }
         std::cout<<"------------------"<<std::endl;
     }
