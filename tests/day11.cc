@@ -85,15 +85,45 @@ void run_cases(std::vector<std::string> & input){
         }   
     }
 }
+using mpp = std::unordered_map<uint64_t,std::unordered_map<uint64_t,uint64_t>>;
+uint64_t dfs(uint64_t s,uint8_t it,mpp &dp){
+    if(it==0){
+        return 1;
+    }
+    if(dp[s][it]!=0) return dp[s][it];
+    if(s==0){
+        return dfs(1,it-1,dp);
+    }
+    auto ss= std::to_string(s);
+    if(ss.size()%2==0){
+        auto f = ss.substr(0, ss.size() / 2);
+        auto se = ss.substr(ss.size() / 2, ss.size() / 2);
+        return dp[s][it]=dfs(std::stoll(f),it-1,dp)+dfs(std::stoll(se),it-1,dp);
+    }
+    else{
+        return dp[s][it]=dfs(s*2024,it-1,dp);
+    }
 
+}
 
 TEST_CASE( "day11", "day" ){
     auto strings = utils::get_inputs_from_file("day11.in");
-    auto inputs = divide_into_list_of_lists_of_strings(strings," ");
-    utils::print_vector_of_vector(inputs);
-    auto & input = inputs[0];
-    run_cases(input);
+    // auto inputs = divide_into_list_of_lists_of_strings(strings," ");
+    auto inputs2 = divide_into_list_of_lists_of_ll(strings," ");
+    utils::print_vector_of_vector(inputs2);
+    // run_cases(input);
     // utils::print_vector_of_vector(inputs);
     // int i = 102;
-    std::cout<<input.size()<<std::endl;
+    // std::cout<<input.size()<<std::endl;
+    uint64_t res=0;
+    mpp mp;
+    for(auto i:inputs2[0]){
+        res+=dfs(i,25,mp);
+    }
+    std::cout<<res<<std::endl;
+    res=0;
+    for(auto i:inputs2[0]){
+        res+=dfs(i,75,mp);
+    }
+    std::cout<<res<<std::endl;
 }
